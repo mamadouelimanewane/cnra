@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CNRA ElectroWatch
 
-## Getting Started
+**Observatoire Électoral des Médias — Conseil National de Régulation de l'Audiovisuel du Sénégal**
 
-First, run the development server:
+Plateforme de monitoring du pluralisme politique dans les médias audiovisuels sénégalais.
+
+## Stack
+
+- **Frontend** : Next.js 16 · TypeScript · Tailwind CSS · shadcn/ui
+- **Backend** : Supabase (PostgreSQL · Auth · Realtime)
+- **Charts** : Recharts · **PDF** : jsPDF
+
+## Installation
 
 ```bash
+git clone https://github.com/mamadouelimanewane/cnra.git
+cd cnra
+npm install
+cp .env.local.example .env.local   # remplir les clés Supabase
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Configuration Supabase
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Exécuter `supabase/migrations/001_initial_schema.sql` dans l'éditeur SQL Supabase
+2. Remplir `.env.local` avec vos clés (Project Settings > API)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Structure
 
-## Learn More
+```
+src/app/(auth)/login/           → Connexion agents CNRA
+src/app/(dashboard)/dashboard/  → Tableau de bord KPIs
+src/app/(dashboard)/campagnes/  → Gestion campagnes
+src/app/(dashboard)/interventions/ → Saisie temps de parole
+src/app/(dashboard)/partis/     → Partis politiques
+src/app/(dashboard)/medias/     → Médias régulés
+src/app/(dashboard)/alertes/    → Alertes déséquilibre
+src/app/(dashboard)/rapports/   → Export PDF officiel
+src/app/public/observatoire/    → Vue publique citoyenne
+supabase/migrations/            → Schéma PostgreSQL + RLS
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+© 2026 CNRA — République du Sénégal
