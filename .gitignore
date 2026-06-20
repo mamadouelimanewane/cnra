@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Tests coverage
+coverage/
+**/coverage/
+
+# Generated docs binaries
+docs/*.docx
+docs/*.pdf
+
+# Node modules at root (testing dependencies)
+/node_modules
+/package-lock.json

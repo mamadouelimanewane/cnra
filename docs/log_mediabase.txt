@@ -1,0 +1,18 @@
+
+> mediabase@0.1.0 dev
+> next dev -p 3001
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.1.10:3001
+- Environments: .env.local
+✓ Ready in 2.0s
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3007
+- PID:          8760
+- Dir:          C:\gravity\cnra\mediabase
+- Log:          .next\dev\logs\next-development.log
+
+Run taskkill /PID 8760 /F to stop it.
+[?25h

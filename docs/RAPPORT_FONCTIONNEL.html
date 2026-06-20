@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNRA Suite — Rapport Fonctionnel Complet</title>
+<style>
+  :root {
+    --bleu: #1A3A6B;
+    --or: #C9A84C;
+    --bleu-clair: #2A5298;
+    --gris-clair: #F4F6FA;
+    --gris: #6B7280;
+    --blanc: #FFFFFF;
+    --rouge: #DC2626;
+    --vert: #16A34A;
+    --vert-clair: #DCFCE7;
+    --orange-clair: #FEF3C7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #EEF2F7;
+    color: #1F2937;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-clair) 100%);
+    color: white;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(26,58,107,0.4);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 40px;
+    border-bottom: 2px solid rgba(201,168,76,0.4);
+  }
+
+  .logo-cnra {
+    width: 60px;
+    height: 60px;
+    background: var(--or);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--bleu);
+    flex-shrink: 0;
+  }
+
+  .header-titles h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .header-titles p {
+    font-size: 13px;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+
+  .header-meta {
+    margin-left: auto;
+    text-align: right;
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .header-meta strong { display: block; font-size: 14px; color: var(--or); }
+
+  /* NAV ONGLETS */
+  nav {
+    background: var(--bleu);
+    padding: 0 40px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+
+  nav button {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    padding: 12px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  nav button:hover { color: white; background: rgba(255,255,255,0.1); }
+  nav button.active { color: var(--or); border-bottom-color: var(--or); font-weight: 600; }
+
+  /* CONTENU PRINCIPAL */
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 40px;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* CARDS STATS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    border-left: 4px solid var(--bleu);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-card .val {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--bleu);
+    line-height: 1;
+  }
+
+  .stat-card .lbl {
+    font-size: 13px;
+    color: var(--gris);
+    margin-top: 6px;
+  }
+
+  .stat-card.gold { border-left-color: var(--or); }
+  .stat-card.gold .val { color: var(--or); }
+  .stat-card.green { border-left-color: var(--vert); }
+  .stat-card.green .val { color: var(--vert); }
+
+  /* SECTION TITRE */
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bleu);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--or);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 24px;
+    background: var(--or);
+    border-radius: 2px;
+  }
+
+  /* ACCORDEON */
+  .accordion { margin-bottom: 30px; }
+
+  .acc-item {
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+    border: 1px solid #E5E7EB;
+  }
+
+  .acc-header {
+    display: flex;
+    align-items: center;
+    padding: 18px 20px;
+    cursor: pointer;
+    gap: 14px;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .acc-header:hover { background: var(--gris-clair); }
+  .acc-item.open .acc-header { background: var(--gris-clair); border-bottom: 1px solid #E5E7EB; }
+
+  .acc-num {
+    width: 36px;
+    height: 36px;
+    background: var(--bleu);
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .acc-title { flex: 1; }
+  .acc-title h3 { font-size: 16px; font-weight: 700; color: var(--bleu); }
+  .acc-title p { font-size: 13px; color: var(--gris); margin-top: 2px; }
+
+  .acc-badges { display: flex; gap: 8px; margin-left: auto; }
+
+  .badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .badge-blue { background: #DBEAFE; color: #1D4ED8; }
+  .badge-gold { background: #FEF3C7; color: #92400E; }
+  .badge-green { background: var(--vert-clair); color: #166534; }
+  .badge-orange { background: #FED7AA; color: #9A3412; }
+
+  .acc-arrow {
+    font-size: 18px;
+    color: var(--gris);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .acc-item.open .acc-arrow { transform: rotate(180deg); }
+
+  .acc-body {
+    display: none;
+    padding: 20px;
+  }
+
+  .acc-item.open .acc-body { display: block; }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  th {
+    background: var(--bleu);
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  th:first-child { border-radius: 6px 0 0 0; }
+  th:last-child { border-radius: 0 6px 0 0; }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #E5E7EB;
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: var(--gris-clair); }
+  tr:hover td { background: #EEF2F7; }
+
+  .status-impl {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--vert);
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .status-dev {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #D97706;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .status-impl::before { content: '✅'; }
+  .status-dev::before { content: '🔧'; }
+
+  /* ROUTES LIST */
+  .routes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .route-tag {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid #BFDBFE;
+  }
+
+  /* TABLES DB LIST */
+  .db-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .db-tag {
+    background: #F0FDF4;
+    color: #166534;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid #BBF7D0;
+  }
+
+  /* INFO BOX */
+  .info-box {
+    background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+    border: 1px solid #BFDBFE;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #1E40AF;
+  }
+
+  .info-box strong { color: var(--bleu); }
+
+  /* GRID 2 COLONNES */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .sub-section {
+    background: var(--gris-clair);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .sub-section h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bleu);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* STACK SECTION */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .stack-card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  .stack-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bleu);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stack-card ul { list-style: none; padding: 0; }
+  .stack-card ul li {
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 1px solid #F3F4F6;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stack-card ul li::before { content: '▸'; color: var(--or); font-size: 10px; }
+  .stack-card ul li:last-child { border-bottom: none; }
+
+  /* TABLEAU GLOBAL */
+  .global-table-wrapper {
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--bleu);
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 20px 40px;
+    font-size: 13px;
+    margin-top: 40px;
+  }
+
+  footer strong { color: var(--or); }
+
+  @media (max-width: 768px) {
+    main { padding: 16px; }
+    .header-top { padding: 12px 16px; }
+    nav { padding: 0 8px; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .acc-badges { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo-cnra">CNRA</div>
+    <div class="header-titles">
+      <h1>CNRA Suite — Rapport Fonctionnel</h1>
+      <p>Conseil National de Régulation de l'Audiovisuel · République du Sénégal</p>
+    </div>
+    <div class="header-meta">
+      <strong>Version 1.0.0</strong>
+      Généré le 20 juin 2025<br>
+      11 Applications · 30+ Tables
+    </div>
+  </div>
+  <nav id="mainNav">
+    <button class="active" onclick="showTab('overview')">Vue d'ensemble</button>
+    <button onclick="showTab('apps')">Applications (11)</button>
+    <button onclick="showTab('stack')">Stack Technique</button>
+    <button onclick="showTab('database')">Base de Données</button>
+    <button onclick="showTab('architecture')">Architecture</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- TAB: VUE D'ENSEMBLE -->
+  <div class="tab-content active" id="tab-overview">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="val">11</div>
+        <div class="lbl">Applications métier</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="val">73+</div>
+        <div class="lbl">Routes disponibles</div>
+      </div>
+      <div class="stat-card green">
+        <div class="val">30+</div>
+        <div class="lbl">Tables Supabase</div>
+      </div>
+      <div class="stat-card">
+        <div class="val">64+</div>
+        <div class="lbl">Tests unitaires</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="val">5</div>
+        <div class="lbl">Apps avec IA Claude</div>
+      </div>
+      <div class="stat-card green">
+        <div class="val">100%</div>
+        <div class="lbl">Tests passants</div>
+      </div>
+    </div>
+
+    <div class="section-title">Résumé des 11 Applications</div>
+
+    <div class="global-table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Application</th>
+            <th>Description</th>
+            <th>Routes</th>
+            <th>Tables DB</th>
+            <th>IA Claude</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>01</td>
+            <td><strong>ElectroWatch</strong></td>
+            <td>Observatoire Electoral — surveillance temps de parole</td>
+            <td><span class="badge badge-blue">14 routes</span></td>
+            <td><span class="badge badge-gold">10 tables</span></td>
+            <td>✅ Oui</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>02</td>
+            <td><strong>MediaWatch</strong></td>
+            <td>Surveillance Contenus — monitoring 24h/24</td>
+            <td><span class="badge badge-blue">17 routes</span></td>
+            <td><span class="badge badge-gold">7 tables</span></td>
+            <td>✅ Oui</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>03</td>
+            <td><strong>MediaBase</strong></td>
+            <td>Annuaire National des Médias — 847 médias</td>
+            <td><span class="badge badge-blue">25 routes</span></td>
+            <td><span class="badge badge-gold">9 tables</span></td>
+            <td>— Non</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>04</td>
+            <td><strong>EduMedia</strong></td>
+            <td>Éducation aux Médias — formations en ligne</td>
+            <td><span class="badge badge-blue">8 routes</span></td>
+            <td><span class="badge badge-gold">6 tables</span></td>
+            <td>— Non</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>05</td>
+            <td><strong>AntiDeep</strong></td>
+            <td>Détection Deepfakes — analyse IA contenu</td>
+            <td><span class="badge badge-blue">8 routes</span></td>
+            <td><span class="badge badge-gold">5 tables</span></td>
+            <td>✅ Oui</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>06</td>
+            <td><strong>Citoyen</strong></td>
+            <td>Portail Citoyen — signalements &amp; pétitions</td>
+            <td><span class="badge badge-blue">7 routes</span></td>
+            <td>—</td>
+            <td>— Non</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>07</td>
+            <td><strong>AdWatch</strong></td>
+            <td>Régulation Publicitaire audiovisuelle</td>
+            <td><span class="badge badge-blue">7 routes</span></td>
+            <td>—</td>
+            <td>— Non</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>08</td>
+            <td><strong>KidsProtect</strong></td>
+            <td>Protection Jeunesse — contenus sensibles</td>
+            <td><span class="badge badge-blue">7 routes</span></td>
+            <td>—</td>
+            <td>✅ Oui</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>09</td>
+            <td><strong>Copyright</strong></td>
+            <td>Droits d'Auteur — violations audiovisuelles</td>
+            <td><span class="badge badge-blue">7 routes</span></td>
+            <td>—</td>
+            <td>— Non</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td><strong>CnraAnalytics</strong></td>
+            <td>Tableau de Bord Global CNRA direction</td>
+            <td><span class="badge badge-blue">7 routes</span></td>
+            <td>—</td>
+            <td>✅ Oui</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td><strong>StreamRegul</strong></td>
+            <td>Régulation Streaming, VOD, Web-TV</td>
+            <td><span class="badge badge-blue">7 routes</span></td>
+            <td>—</td>
+            <td>— Non</td>
+            <td><span class="status-impl">Implémenté</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <strong>Stack commune :</strong> Next.js 16.2.9 · React 19 · TypeScript 5 · Tailwind CSS v4 · Supabase (PostgreSQL + Auth + Realtime) · @anthropic-ai/sdk · Vercel · RLS activé sur toutes les tables sensibles.
+    </div>
+  </div>
+
+  <!-- TAB: APPLICATIONS -->
+  <div class="tab-content" id="tab-apps">
+    <div class="section-title">Détail des 11 Applications</div>
+
+    <div class="accordion">
+
+      <!-- APP 1: ElectroWatch -->
+      <div class="acc-item" id="app1">
+        <div class="acc-header" onclick="toggleAcc('app1')">
+          <div class="acc-num">01</div>
+          <div class="acc-title">
+            <h3>ElectroWatch — Observatoire Electoral</h3>
+            <p>Surveillance du temps de parole électoral, alertes déséquilibre, salle de crise temps réel</p>
+          </div>
+          <div class="acc-badges">
+            <span class="badge badge-blue">14 routes</span>
+            <span class="badge badge-gold">10 tables</span>
+            <span class="badge badge-green">IA Claude</span>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid-2">
+            <div class="sub-section">
+              <h4>Routes disponibles</h4>
+              <div class="routes-list">
+                <span class="route-tag">/dashboard</span>
+                <span class="route-tag">/campagnes</span>
+                <span class="route-tag">/interventions</span>
+                <span class="route-tag">/medias</span>
+                <span class="route-tag">/partis</span>
+                <span class="route-tag">/alertes</span>
+                <span class="route-tag">/rapports</span>
+                <span class="route-tag">/sanctions</span>
+                <span class="route-tag">/signalements</span>
+                <span class="route-tag">/directeur</span>
+                <span class="route-tag">/ia-assistant</span>
+                <span class="route-tag">/salle-de-crise</span>
+                <span class="route-tag">/public/observatoire</span>
+                <span class="route-tag">/public/signaler</span>
+              </div>
+            </div>
+            <div class="sub-section">
+              <h4>Tables Supabase</h4>
+              <div class="db-list">
+                <span class="db-tag">partis</span>
+                <span class="db-tag">medias</span>
+                <span class="db-tag">campagnes</span>
+                <span class="db-tag">interventions</span>
+                <span class="db-tag">alertes</span>
+                <span class="db-tag">rapports</span>
+                <span class="db-tag">profils</span>
+                <span class="db-tag">sanctions</span>
+                <span class="db-tag">mises_en_demeure</span>
+                <span class="db-tag">notifications_log</span>
+              </div>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Surveillance temps de parole</td><td>Monitoring en temps réel du temps d'antenne par parti/candidat</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Alertes déséquilibre</td><td>Détection automatique des dépassements de quota par média</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>IA Assistant (Claude)</td><td>Analyse intelligente, recommandations, résumés automatiques</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Salle de crise temps réel</td><td>Dashboard live pour situations critiques, Supabase Realtime</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Export PDF / Rapports</td><td>Génération automatique de rapports officiels exportables</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Sanctions automatiques</td><td>Workflow de mise en demeure et sanctions par paliers</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Portail public observatoire</td><td>Interface citoyenne de consultation des données électorales</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>3 rôles utilisateurs</td><td>Directeur, Analyste, Opérateur avec permissions différenciées</td><td><span class="status-impl">Implémenté</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- APP 2: MediaWatch -->
+      <div class="acc-item" id="app2">
+        <div class="acc-header" onclick="toggleAcc('app2')">
+          <div class="acc-num">02</div>
+          <div class="acc-title">
+            <h3>MediaWatch — Surveillance Contenus</h3>
+            <p>Monitoring 24h/24 des contenus audiovisuels, preuves légales horodatées, transcription</p>
+          </div>
+          <div class="acc-badges">
+            <span class="badge badge-blue">17 routes</span>
+            <span class="badge badge-gold">7 tables</span>
+            <span class="badge badge-green">Streaming</span>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid-2">
+            <div class="sub-section">
+              <h4>Routes disponibles (17)</h4>
+              <div class="routes-list">
+                <span class="route-tag">/dashboard</span>
+                <span class="route-tag">/alertes</span>
+                <span class="route-tag">/temps-parole</span>
+                <span class="route-tag">/acteurs</span>
+                <span class="route-tag">/biais</span>
+                <span class="route-tag">/comparatif</span>
+                <span class="route-tag">/medias</span>
+                <span class="route-tag">/rapports</span>
+                <span class="route-tag">/realtime</span>
+                <span class="route-tag">/thematiques</span>
+                <span class="route-tag">/mise-en-demeure</span>
+                <span class="route-tag">/preuves</span>
+                <span class="route-tag">/streaming</span>
+                <span class="route-tag">/partenaires</span>
+                <span class="route-tag">/saisines</span>
+                <span class="route-tag">/transcription</span>
+                <span class="route-tag">/widget</span>
+              </div>
+            </div>
+            <div class="sub-section">
+              <h4>Tables Supabase</h4>
+              <div class="db-list">
+                <span class="db-tag">scores_pluralisme</span>
+                <span class="db-tag">incidents_signal</span>
+                <span class="db-tag">transcriptions</span>
+                <span class="db-tag">preuves_legales</span>
+                <span class="db-tag">connecteurs_streaming</span>
+                <span class="db-tag">partenaires</span>
+                <span class="db-tag">saisines_judiciaires</span>
+              </div>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Monitoring 24h/24</td><td>Surveillance continue des flux audiovisuels de tous les médias</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Preuves légales horodatées</td><td>Capture et archivage avec horodatage certifié pour procédures judiciaires</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Streaming connecté</td><td>Connexion aux flux live TV/Radio pour analyse en temps réel</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Transcription automatique</td><td>Transcription IA des émissions pour analyse sémantique</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Saisines judiciaires</td><td>Workflow de transmission aux instances judiciaires</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Score pluralisme</td><td>Calcul automatique du score de pluralisme par média</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Analyse biais éditorial</td><td>Détection des biais de traitement de l'information</td><td><span class="status-dev">En développement</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- APP 3: MediaBase -->
+      <div class="acc-item" id="app3">
+        <div class="acc-header" onclick="toggleAcc('app3')">
+          <div class="acc-num">03</div>
+          <div class="acc-title">
+            <h3>MediaBase — Annuaire National des Médias</h3>
+            <p>Registre officiel 847 médias, annuaire journalistes, graphe de concentration, API publique</p>
+          </div>
+          <div class="acc-badges">
+            <span class="badge badge-blue">25 routes</span>
+            <span class="badge badge-gold">9 tables</span>
+            <span class="badge badge-orange">API Publique</span>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid-2">
+            <div class="sub-section">
+              <h4>Routes (25)</h4>
+              <div class="routes-list">
+                <span class="route-tag">/dashboard</span>
+                <span class="route-tag">/medias</span>
+                <span class="route-tag">/journalistes</span>
+                <span class="route-tag">/groupes</span>
+                <span class="route-tag">/audiences</span>
+                <span class="route-tag">/audits</span>
+                <span class="route-tag">/programmes</span>
+                <span class="route-tag">/api-publique</span>
+                <span class="route-tag">/sanctions</span>
+                <span class="route-tag">/licences</span>
+                <span class="route-tag">/mutations</span>
+                <span class="route-tag">/renouvellements</span>
+                <span class="route-tag">/carte</span>
+                <span class="route-tag">/graphe</span>
+                <span class="route-tag">/paysage</span>
+                <span class="route-tag">/concentration</span>
+                <span class="route-tag">/accreditations</span>
+                <span class="route-tag">/annuaire</span>
+                <span class="route-tag">/import</span>
+                <span class="route-tag">/export</span>
+                <span class="route-tag">/rapports</span>
+                <span class="route-tag">/webhooks</span>
+              </div>
+            </div>
+            <div class="sub-section">
+              <h4>Tables Supabase</h4>
+              <div class="db-list">
+                <span class="db-tag">medias</span>
+                <span class="db-tag">journalistes</span>
+                <span class="db-tag">groupes_media</span>
+                <span class="db-tag">programmes</span>
+                <span class="db-tag">audits_media</span>
+                <span class="db-tag">stats_audience</span>
+                <span class="db-tag">licences</span>
+                <span class="db-tag">api_keys</span>
+                <span class="db-tag">webhook_configs</span>
+              </div>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Registre officiel 847 médias</td><td>Base complète TV, Radio, Web, Presse avec données légales</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Annuaire journalistes</td><td>Répertoire national avec accréditations et affiliations</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Visualisation graphe</td><td>Cartographie interactive des liens capitalistiques entre médias</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>API Publique</td><td>API REST documentée pour accès tiers aux données médias</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Import / Export</td><td>Import CSV/Excel, export multi-format (PDF/Excel/CSV)</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Webhooks</td><td>Notifications temps réel vers systèmes tiers</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Gestion licences</td><td>Suivi des autorisations d'émettre, renouvellements, mutations</td><td><span class="status-impl">Implémenté</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- APP 4: EduMedia -->
+      <div class="acc-item" id="app4">
+        <div class="acc-header" onclick="toggleAcc('app4')">
+          <div class="acc-num">04</div>
+          <div class="acc-title">
+            <h3>EduMedia — Éducation aux Médias</h3>
+            <p>Formations en ligne, quiz, certifications, partenariats écoles</p>
+          </div>
+          <div class="acc-badges">
+            <span class="badge badge-blue">8 routes</span>
+            <span class="badge badge-gold">6 tables</span>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid-2">
+            <div class="sub-section">
+              <h4>Routes</h4>
+              <div class="routes-list">
+                <span class="route-tag">/dashboard</span>
+                <span class="route-tag">/formations</span>
+                <span class="route-tag">/modules</span>
+                <span class="route-tag">/ressources</span>
+                <span class="route-tag">/quiz</span>
+                <span class="route-tag">/certificats</span>
+                <span class="route-tag">/etablissements</span>
+                <span class="route-tag">/rapports</span>
+              </div>
+            </div>
+            <div class="sub-section">
+              <h4>Tables Supabase</h4>
+              <div class="db-list">
+                <span class="db-tag">etablissements</span>
+                <span class="db-tag">formations</span>
+                <span class="db-tag">modules_formation</span>
+                <span class="db-tag">ressources</span>
+                <span class="db-tag">quiz</span>
+                <span class="db-tag">certificats</span>
+              </div>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Formations en ligne</td><td>Modules e-learning sur la régulation, les droits médias, le pluralisme</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Quiz interactifs</td><td>Évaluations en ligne avec scoring automatique</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Certifications</td><td>Génération de certificats officiels PDF après formation</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Ressources pédagogiques</td><td>Bibliothèque de documents, vidéos, guides</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Partenariats écoles</td><td>Gestion des établissements partenaires et accès institutionnel</td><td><span class="status-impl">Implémenté</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- APP 5: AntiDeep -->
+      <div class="acc-item" id="app5">
+        <div class="acc-header" onclick="toggleAcc('app5')">
+          <div class="acc-num">05</div>
+          <div class="acc-title">
+            <h3>AntiDeep — Détection Deepfakes</h3>
+            <p>Analyse contenu IA, cartographie campagnes désinformation, base signatures</p>
+          </div>
+          <div class="acc-badges">
+            <span class="badge badge-blue">8 routes</span>
+            <span class="badge badge-gold">5 tables</span>
+            <span class="badge badge-green">IA Claude</span>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid-2">
+            <div class="sub-section">
+              <h4>Routes</h4>
+              <div class="routes-list">
+                <span class="route-tag">/dashboard</span>
+                <span class="route-tag">/soumettre</span>
+                <span class="route-tag">/contenus</span>
+                <span class="route-tag">/campagnes</span>
+                <span class="route-tag">/sources</span>
+                <span class="route-tag">/alertes</span>
+                <span class="route-tag">/signatures</span>
+                <span class="route-tag">/rapports</span>
+              </div>
+            </div>
+            <div class="sub-section">
+              <h4>Tables Supabase</h4>
+              <div class="db-list">
+                <span class="db-tag">contenus_analyses</span>
+                <span class="db-tag">campagnes_desinfo</span>
+                <span class="db-tag">sources_suspectes</span>
+                <span class="db-tag">alertes_antideep</span>
+                <span class="db-tag">signatures_deepfake</span>
+              </div>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Analyse contenu IA</td><td>Détection automatique de manipulations numériques par IA</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Détection deepfakes</td><td>Identification de vidéos/images falsifiées avec score de confiance</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Cartographie campagnes</td><td>Visualisation des réseaux de désinformation et leurs sources</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Base de signatures</td><td>Bibliothèque de signatures deepfakes pour détection future</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Soumission citoyenne</td><td>Interface de soumission de contenus suspects par les citoyens</td><td><span class="status-impl">Implémenté</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- APP 6-11: Regroupées -->
+      <div class="acc-item" id="app6">
+        <div class="acc-header" onclick="toggleAcc('app6')">
+          <div class="acc-num">06</div>
+          <div class="acc-title">
+            <h3>Citoyen — Portail Citoyen</h3>
+            <p>Interface publique de signalements, pétitions et consultation des décisions CNRA</p>
+          </div>
+          <div class="acc-badges"><span class="badge badge-blue">7 routes</span></div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="sub-section" style="margin-bottom:16px">
+            <h4>Routes</h4>
+            <div class="routes-list">
+              <span class="route-tag">/accueil</span>
+              <span class="route-tag">/signaler</span>
+              <span class="route-tag">/petitions</span>
+              <span class="route-tag">/decisions</span>
+              <span class="route-tag">/medias</span>
+              <span class="route-tag">/education</span>
+              <span class="route-tag">/observatoire</span>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Signalements citoyens</td><td>Formulaire de signalement de contenus problématiques</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Pétitions</td><td>Création et signature de pétitions de régulation</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Consultation décisions</td><td>Accès public aux décisions et délibérations du CNRA</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Observatoire public</td><td>Données ouvertes sur le paysage audiovisuel sénégalais</td><td><span class="status-impl">Implémenté</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item" id="app7">
+        <div class="acc-header" onclick="toggleAcc('app7')">
+          <div class="acc-num">07</div>
+          <div class="acc-title">
+            <h3>AdWatch — Régulation Publicitaire</h3>
+            <p>Surveillance des publicités audiovisuelles, signalements publicités illicites</p>
+          </div>
+          <div class="acc-badges"><span class="badge badge-blue">7 routes</span></div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Surveillance publicités</td><td>Monitoring des publicités diffusées sur les médias audiovisuels</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Signalements publicités illicites</td><td>Workflow de traitement des publicités non conformes à la réglementation</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Référentiel publicitaire</td><td>Base de données des publicités conformes et non conformes</td><td><span class="status-dev">En développement</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item" id="app8">
+        <div class="acc-header" onclick="toggleAcc('app8')">
+          <div class="acc-num">08</div>
+          <div class="acc-title">
+            <h3>KidsProtect — Protection Jeunesse</h3>
+            <p>Protection des contenus jeunesse, signalements, IA intégrée (@anthropic-ai/sdk)</p>
+          </div>
+          <div class="acc-badges">
+            <span class="badge badge-blue">7 routes</span>
+            <span class="badge badge-green">IA Claude</span>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Analyse contenu IA</td><td>Classification automatique des contenus inadaptés à la jeunesse</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Signalements protection</td><td>Système de signalement dédié aux contenus préjudiciables aux mineurs</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Suivi horaires protégés</td><td>Contrôle du respect des plages horaires de protection de l'enfance</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Alertes automatiques</td><td>Détection et alerte immédiate des violations de la protection jeunesse</td><td><span class="status-impl">Implémenté</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item" id="app9">
+        <div class="acc-header" onclick="toggleAcc('app9')">
+          <div class="acc-num">09</div>
+          <div class="acc-title">
+            <h3>Copyright — Droits d'Auteur</h3>
+            <p>Protection des droits d'auteur audiovisuels, signalements violations</p>
+          </div>
+          <div class="acc-badges"><span class="badge badge-blue">7 routes</span></div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Registre droits d'auteur</td><td>Base officielle des œuvres protégées diffusées sur les médias sénégalais</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Signalements violations</td><td>Réception et traitement des plaintes pour violation de droits</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Coordination BSDA</td><td>Interface avec le Bureau Sénégalais du Droit d'Auteur</td><td><span class="status-dev">En développement</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item" id="app10">
+        <div class="acc-header" onclick="toggleAcc('app10')">
+          <div class="acc-num">10</div>
+          <div class="acc-title">
+            <h3>CnraAnalytics — Tableau de Bord Global</h3>
+            <p>Analytics global CNRA, IA Claude, tableau de bord direction</p>
+          </div>
+          <div class="acc-badges">
+            <span class="badge badge-blue">7 routes</span>
+            <span class="badge badge-green">IA Claude</span>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Dashboard direction</td><td>Vue consolidée de toutes les métriques des 11 applications</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>IA Analytics (Claude)</td><td>Analyse intelligente des tendances et recommandations stratégiques</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Rapports exécutifs</td><td>Génération automatique de rapports pour la Direction et le Conseil</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Indicateurs KPI</td><td>Suivi des KPI de régulation en temps réel</td><td><span class="status-impl">Implémenté</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acc-item" id="app11">
+        <div class="acc-header" onclick="toggleAcc('app11')">
+          <div class="acc-num">11</div>
+          <div class="acc-title">
+            <h3>StreamRegul — Régulation Streaming</h3>
+            <p>Régulation des plateformes streaming, VOD, Web-TV</p>
+          </div>
+          <div class="acc-badges"><span class="badge badge-blue">7 routes</span></div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <table>
+            <thead><tr><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Registre plateformes</td><td>Répertoire des services de streaming et VOD actifs au Sénégal</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Conformité contenu</td><td>Vérification du respect des quotas et règles de contenu</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Surveillance Web-TV</td><td>Monitoring des chaînes web et diffuseurs en ligne</td><td><span class="status-impl">Implémenté</span></td></tr>
+              <tr><td>Régulation VOD</td><td>Encadrement des services de vidéo à la demande</td><td><span class="status-dev">En développement</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAB: STACK TECHNIQUE -->
+  <div class="tab-content" id="tab-stack">
+    <div class="section-title">Stack Technique CNRA Suite</div>
+
+    <div class="info-box">
+      La Suite CNRA est construite sur une architecture moderne, modulaire et cloud-native, conçue pour la haute disponibilité et la sécurité maximale des données de régulation audiovisuelle.
+    </div>
+
+    <div class="stack-grid">
+      <div class="stack-card">
+        <h4>🖥️ Frontend</h4>
+        <ul>
+          <li>Next.js 16.2.9 (App Router)</li>
+          <li>React 19 (Server Components)</li>
+          <li>TypeScript 5 (strict mode)</li>
+          <li>Tailwind CSS v4</li>
+          <li>Radix UI (composants accessibles)</li>
+          <li>Recharts (visualisations)</li>
+        </ul>
+      </div>
+      <div class="stack-card">
+        <h4>🗄️ Backend / BDD</h4>
+        <ul>
+          <li>Supabase (PostgreSQL managed)</li>
+          <li>Row Level Security (RLS) activé</li>
+          <li>Supabase Auth (JWT)</li>
+          <li>Supabase Realtime (WebSockets)</li>
+          <li>30+ tables SQL versionnées</li>
+          <li>Migrations Supabase CLI</li>
+        </ul>
+      </div>
+      <div class="stack-card">
+        <h4>🤖 Intelligence Artificielle</h4>
+        <ul>
+          <li>@anthropic-ai/sdk (Claude API)</li>
+          <li>Claude Sonnet (analyse contenu)</li>
+          <li>ElectroWatch: IA-assistant</li>
+          <li>KidsProtect: classification</li>
+          <li>AntiDeep: détection deepfakes</li>
+          <li>CnraAnalytics: insights direction</li>
+        </ul>
+      </div>
+      <div class="stack-card">
+        <h4>☁️ Déploiement</h4>
+        <ul>
+          <li>Vercel (hosting + CDN)</li>
+          <li>CI/CD automatisé</li>
+          <li>Preview deployments</li>
+          <li>Edge Functions</li>
+          <li>Variables d'env sécurisées</li>
+          <li>Monitoring Vercel Analytics</li>
+        </ul>
+      </div>
+      <div class="stack-card">
+        <h4>🧪 Qualité</h4>
+        <ul>
+          <li>Vitest (tests unitaires)</li>
+          <li>64+ tests, 100% passants</li>
+          <li>ESLint + Prettier</li>
+          <li>TypeScript strict</li>
+          <li>Accessibilité WCAG 2.1</li>
+          <li>Design responsive mobile-first</li>
+        </ul>
+      </div>
+      <div class="stack-card">
+        <h4>📄 Export / Intégration</h4>
+        <ul>
+          <li>Export PDF (react-pdf)</li>
+          <li>Export Excel / CSV</li>
+          <li>API REST publique (MediaBase)</li>
+          <li>Webhooks configurables</li>
+          <li>Import CSV/Excel</li>
+          <li>Streaming (connecteurs live)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: BASE DE DONNÉES -->
+  <div class="tab-content" id="tab-database">
+    <div class="section-title">Base de Données Supabase</div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="val">30+</div><div class="lbl">Tables SQL totales</div></div>
+      <div class="stat-card gold"><div class="val">RLS</div><div class="lbl">Row Level Security activé</div></div>
+      <div class="stat-card green"><div class="val">100%</div><div class="lbl">Migrations versionnées</div></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Application</th>
+          <th>Tables</th>
+          <th>RLS</th>
+          <th>Realtime</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>ElectroWatch</strong></td>
+          <td>partis, medias, campagnes, interventions, alertes, rapports, profils, sanctions, mises_en_demeure, notifications_log</td>
+          <td>✅</td>
+          <td>✅ Salle de crise</td>
+        </tr>
+        <tr>
+          <td><strong>MediaWatch</strong></td>
+          <td>scores_pluralisme, incidents_signal, transcriptions, preuves_legales, connecteurs_streaming, partenaires, saisines_judiciaires</td>
+          <td>✅</td>
+          <td>✅ Alertes live</td>
+        </tr>
+        <tr>
+          <td><strong>MediaBase</strong></td>
+          <td>medias, journalistes, groupes_media, programmes, audits_media, stats_audience, licences, api_keys, webhook_configs</td>
+          <td>✅</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>EduMedia</strong></td>
+          <td>etablissements, formations, modules_formation, ressources, quiz, certificats</td>
+          <td>✅</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>AntiDeep</strong></td>
+          <td>contenus_analyses, campagnes_desinfo, sources_suspectes, alertes_antideep, signatures_deepfake</td>
+          <td>✅</td>
+          <td>✅ Alertes</td>
+        </tr>
+        <tr>
+          <td><strong>Citoyen / AdWatch / KidsProtect / Copyright / CnraAnalytics / StreamRegul</strong></td>
+          <td>Tables partagées profils, signalements, notifications (schéma commun)</td>
+          <td>✅</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <strong>Sécurité :</strong> Row Level Security (RLS) activé sur toutes les tables contenant des données sensibles. Authentification JWT via Supabase Auth. Chiffrement des données au repos (AES-256). Accès API via clés rotatives stockées en variables d'environnement Vercel.
+    </div>
+  </div>
+
+  <!-- TAB: ARCHITECTURE -->
+  <div class="tab-content" id="tab-architecture">
+    <div class="section-title">Architecture Système</div>
+
+    <div class="info-box">
+      <strong>Modèle monorepo modulaire :</strong> Chaque application est un module Next.js indépendant partageant une couche de services Supabase commune. Les 11 applications peuvent être déployées de manière autonome ou intégrée dans un portail unifié CNRA.
+    </div>
+
+    <div class="grid-2">
+      <div class="sub-section">
+        <h4>Couche Présentation</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ Next.js App Router (SSR + SSG)</li>
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ React Server Components</li>
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ Tailwind CSS v4 (design system)</li>
+          <li style="padding:6px 0;font-size:14px;">▸ Responsive mobile-first</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h4>Couche Métier</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ Server Actions Next.js</li>
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ Services TypeScript typés</li>
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ Intégration Claude API (IA)</li>
+          <li style="padding:6px 0;font-size:14px;">▸ Workflows automatisés</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h4>Couche Données</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ PostgreSQL (Supabase managed)</li>
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ RLS + Auth JWT</li>
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ Realtime WebSockets</li>
+          <li style="padding:6px 0;font-size:14px;">▸ Storage (fichiers, preuves)</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h4>Infrastructure</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ Vercel Edge Network (CDN)</li>
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ CI/CD automatisé GitHub</li>
+          <li style="padding:6px 0;border-bottom:1px solid #E5E7EB;font-size:14px;">▸ Preview Deployments</li>
+          <li style="padding:6px 0;font-size:14px;">▸ Monitoring &amp; Analytics</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <strong>CNRA Suite — Rapport Fonctionnel v1.0.0</strong><br>
+  Conseil National de Régulation de l'Audiovisuel · République du Sénégal<br>
+  Généré le 20 juin 2025 · Document confidentiel
+</footer>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleAcc(id) {
+  const item = document.getElementById(id);
+  item.classList.toggle('open');
+}
+</script>
+</body>
+</html>

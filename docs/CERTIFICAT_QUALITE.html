@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificat de Qualité Logicielle — CNRA Suite</title>
+<style>
+  :root {
+    --bleu: #1A3A6B;
+    --bleu-fonce: #0F2347;
+    --bleu-clair: #2A5298;
+    --or: #C9A84C;
+    --or-clair: #E8C96A;
+    --or-fonce: #A0802A;
+    --gris-clair: #F8F6F0;
+    --gris: #6B7280;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #C8C0B0;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+  }
+
+  /* BOUTON IMPRESSION */
+  .print-btn {
+    background: var(--bleu);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 24px;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(26,58,107,0.3);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .print-btn:hover { background: var(--bleu-clair); transform: translateY(-1px); }
+
+  /* PAGE A4 */
+  .certificate {
+    width: 210mm;
+    min-height: 297mm;
+    background: var(--gris-clair);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* BORDURE ORNEMENTALE EXTERNE */
+  .outer-border {
+    position: absolute;
+    inset: 10px;
+    border: 3px solid var(--or);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .inner-border {
+    position: absolute;
+    inset: 14px;
+    border: 1px solid var(--or-fonce);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* COINS ORNEMENTAUX */
+  .corner {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    z-index: 20;
+  }
+  .corner-tl { top: 8px; left: 8px; }
+  .corner-tr { top: 8px; right: 8px; transform: scaleX(-1); }
+  .corner-bl { bottom: 8px; left: 8px; transform: scaleY(-1); }
+  .corner-br { bottom: 8px; right: 8px; transform: scale(-1); }
+
+  /* FOND FILIGRANE */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 120px;
+    font-weight: 900;
+    color: rgba(26,58,107,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+    letter-spacing: 8px;
+    font-family: 'Arial Black', sans-serif;
+  }
+
+  /* CONTENU */
+  .content {
+    position: relative;
+    z-index: 5;
+    padding: 28px 40px 28px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  /* EN-TÊTE OFFICIELLE */
+  .header-official {
+    text-align: center;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--or);
+  }
+
+  .republique {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--bleu);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .devise {
+    font-size: 10px;
+    color: var(--gris);
+    letter-spacing: 2px;
+    font-style: italic;
+    margin-bottom: 14px;
+  }
+
+  .logos-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 14px;
+  }
+
+  /* LOGO SÉNÉGAL SVG */
+  .logo-senegal {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* LOGO CNRA */
+  .logo-cnra-cert {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-clair) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(26,58,107,0.4);
+    border: 3px solid var(--or);
+  }
+
+  .logo-cnra-cert span {
+    font-size: 20px;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 1px;
+    font-family: 'Arial Black', sans-serif;
+  }
+
+  .ministere {
+    font-size: 10px;
+    color: var(--bleu);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .cnra-full {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bleu-fonce);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* TITRE PRINCIPAL */
+  .cert-title-block {
+    text-align: center;
+    margin: 16px 0 14px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-clair) 100%);
+    border-radius: 4px;
+    position: relative;
+  }
+
+  .cert-title-block::before,
+  .cert-title-block::after {
+    content: '❖';
+    position: absolute;
+    color: var(--or);
+    font-size: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .cert-title-block::before { left: 16px; }
+  .cert-title-block::after { right: 16px; }
+
+  .cert-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .cert-main-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .cert-subtitle {
+    font-size: 11px;
+    color: var(--or-clair);
+    letter-spacing: 2px;
+    margin-top: 5px;
+    font-style: italic;
+  }
+
+  /* NUMÉRO ET DATE */
+  .cert-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid #DDD;
+    border-radius: 4px;
+    border-left: 4px solid var(--or);
+  }
+
+  .cert-meta-item label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 2px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .cert-meta-item span {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bleu);
+    letter-spacing: 1px;
+  }
+
+  /* OBJET */
+  .cert-object {
+    text-align: center;
+    margin-bottom: 14px;
+    padding: 10px 20px;
+    border: 1px dashed var(--or);
+    border-radius: 4px;
+    background: rgba(201,168,76,0.05);
+  }
+
+  .cert-object p {
+    font-size: 10px;
+    color: var(--gris);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .cert-object h2 {
+    font-size: 14px;
+    color: var(--bleu-fonce);
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  /* INTRO TEXT */
+  .cert-intro {
+    text-align: center;
+    font-size: 11px;
+    color: #374151;
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+
+  .cert-intro strong { color: var(--bleu); font-size: 12px; }
+
+  /* TABLEAU DES APPLICATIONS */
+  .apps-table-wrapper {
+    margin-bottom: 14px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .apps-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .apps-table thead tr {
+    background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-clair) 100%);
+  }
+
+  .apps-table th {
+    color: white;
+    padding: 8px 8px;
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .apps-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #E5E7EB;
+    vertical-align: middle;
+  }
+
+  .apps-table tr:nth-child(even) td { background: #F0F4FB; }
+  .apps-table tr:last-child td { border-bottom: none; }
+
+  .app-num {
+    width: 22px;
+    height: 22px;
+    background: var(--bleu);
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .app-name { font-weight: 700; color: var(--bleu-fonce); font-size: 10px; }
+  .app-desc { color: var(--gris); font-size: 9px; }
+
+  .badge-sm {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  .badge-routes { background: #DBEAFE; color: #1D4ED8; }
+  .badge-tables { background: #D1FAE5; color: #065F46; }
+  .badge-fonct { background: #FEF3C7; color: #92400E; }
+
+  .status-ok { color: #16A34A; font-size: 14px; }
+
+  /* CRITÈRES */
+  .criteria-section {
+    margin-bottom: 14px;
+  }
+
+  .criteria-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bleu);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .criteria-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--or);
+  }
+
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .criterion {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    color: #1F2937;
+    padding: 5px 8px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #E5E7EB;
+    border-left: 3px solid var(--vert, #16A34A);
+  }
+
+  .criterion .check { font-size: 12px; flex-shrink: 0; }
+
+  /* SIGNATURES */
+  .signatures-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 10px;
+    gap: 16px;
+  }
+
+  .sig-block {
+    text-align: center;
+    flex: 1;
+  }
+
+  .sig-line {
+    border-top: 1.5px solid var(--bleu);
+    margin: 30px auto 5px;
+    width: 80%;
+  }
+
+  .sig-title {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--bleu);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .sig-name {
+    font-size: 10px;
+    color: #374151;
+    margin-top: 2px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  /* SCEAU SVG */
+  .seal-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  /* FOOTER */
+  .cert-footer {
+    background: linear-gradient(135deg, var(--bleu-fonce) 0%, var(--bleu) 100%);
+    padding: 10px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+
+  .footer-text {
+    font-size: 8px;
+    color: rgba(255,255,255,0.7);
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  .footer-text strong { color: var(--or-clair); }
+
+  /* PRINT STYLES */
+  @media print {
+    body {
+      background: white;
+      padding: 0;
+      margin: 0;
+    }
+
+    .print-btn { display: none; }
+
+    .certificate {
+      width: 210mm;
+      min-height: 297mm;
+      box-shadow: none;
+      page-break-after: avoid;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .certificate {
+      width: 100%;
+      min-height: auto;
+    }
+    .content { padding: 20px; }
+    .criteria-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">
+  🖨️ Imprimer / Enregistrer en PDF
+</button>
+
+<div class="certificate">
+
+  <!-- BORDURES ORNEMENTALES -->
+  <div class="outer-border"></div>
+  <div class="inner-border"></div>
+
+  <!-- COINS SVG -->
+  <svg class="corner corner-tl" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 2 L18 2 L18 5 L5 5 L5 18 L2 18 Z" fill="#C9A84C"/>
+    <path d="M8 8 L16 8 L16 10 L10 10 L10 16 L8 16 Z" fill="#C9A84C" opacity="0.5"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C"/>
+  </svg>
+  <svg class="corner corner-tr" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 2 L18 2 L18 5 L5 5 L5 18 L2 18 Z" fill="#C9A84C"/>
+    <path d="M8 8 L16 8 L16 10 L10 10 L10 16 L8 16 Z" fill="#C9A84C" opacity="0.5"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C"/>
+  </svg>
+  <svg class="corner corner-bl" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 2 L18 2 L18 5 L5 5 L5 18 L2 18 Z" fill="#C9A84C"/>
+    <path d="M8 8 L16 8 L16 10 L10 10 L10 16 L8 16 Z" fill="#C9A84C" opacity="0.5"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C"/>
+  </svg>
+  <svg class="corner corner-br" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 2 L18 2 L18 5 L5 5 L5 18 L2 18 Z" fill="#C9A84C"/>
+    <path d="M8 8 L16 8 L16 10 L10 10 L10 16 L8 16 Z" fill="#C9A84C" opacity="0.5"/>
+    <circle cx="4" cy="4" r="2" fill="#C9A84C"/>
+  </svg>
+
+  <!-- FILIGRANE -->
+  <div class="watermark">CNRA</div>
+
+  <div class="content">
+
+    <!-- EN-TÊTE OFFICIELLE -->
+    <div class="header-official">
+      <div class="republique">République du Sénégal</div>
+      <div class="devise">Un Peuple — Un But — Une Foi</div>
+      <div class="logos-row">
+        <!-- LOGO SÉNÉGAL -->
+        <svg class="logo-senegal" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="28" fill="none" stroke="#C9A84C" stroke-width="2"/>
+          <!-- Drapeau Sénégal simplifié -->
+          <rect x="10" y="18" width="13" height="24" fill="#00853F" rx="1"/>
+          <rect x="23" y="18" width="13" height="24" fill="#FDEF42"/>
+          <rect x="36" y="18" width="13" height="24" fill="#E31B23" rx="1"/>
+          <!-- Étoile verte au centre -->
+          <polygon points="29.5,22 30.9,26.5 35.5,26.5 31.8,29.1 33.2,33.6 29.5,31 25.8,33.6 27.2,29.1 23.5,26.5 28.1,26.5" fill="#00853F"/>
+        </svg>
+
+        <!-- LOGO CNRA CENTRAL -->
+        <div class="logo-cnra-cert"><span>CNRA</span></div>
+
+        <!-- LOGO INSTITUTIONNEL -->
+        <svg viewBox="0 0 60 60" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="28" fill="none" stroke="#C9A84C" stroke-width="2"/>
+          <text x="30" y="22" text-anchor="middle" font-size="7" fill="#1A3A6B" font-family="Georgia" font-weight="700">RÉGULATION</text>
+          <text x="30" y="31" text-anchor="middle" font-size="7" fill="#1A3A6B" font-family="Georgia" font-weight="700">AUDIOVISUELLE</text>
+          <rect x="14" y="34" width="32" height="1.5" fill="#C9A84C"/>
+          <text x="30" y="44" text-anchor="middle" font-size="8" fill="#C9A84C" font-family="Georgia" font-style="italic">Dakar</text>
+          <text x="30" y="51" text-anchor="middle" font-size="6" fill="#6B7280" font-family="Georgia">2025</text>
+        </svg>
+      </div>
+      <div class="ministere">Conseil National de Régulation de l'Audiovisuel</div>
+      <div class="cnra-full">C · N · R · A</div>
+    </div>
+
+    <!-- TITRE PRINCIPAL -->
+    <div class="cert-title-block">
+      <div class="cert-label">Document officiel</div>
+      <div class="cert-main-title">Certificat de Qualité Logicielle</div>
+      <div class="cert-subtitle">Suite Numérique de Régulation Audiovisuelle</div>
+    </div>
+
+    <!-- NUMÉRO ET DATE -->
+    <div class="cert-meta">
+      <div class="cert-meta-item">
+        <label>Numéro de certificat</label>
+        <span>CNRA-CERT-2025-001</span>
+      </div>
+      <div class="cert-meta-item" style="text-align:center;">
+        <label>Date d'émission</label>
+        <span>20 Juin 2025</span>
+      </div>
+      <div class="cert-meta-item" style="text-align:right;">
+        <label>Validité</label>
+        <span>2025 — 2026</span>
+      </div>
+    </div>
+
+    <!-- OBJET -->
+    <div class="cert-object">
+      <p>Objet de la certification</p>
+      <h2>« La Suite Numérique CNRA — Système d'Information de Régulation Audiovisuelle »</h2>
+    </div>
+
+    <!-- INTRO -->
+    <div class="cert-intro">
+      Le Conseil National de Régulation de l'Audiovisuel certifie que le système logiciel dénommé<br>
+      <strong>« Suite Numérique CNRA »</strong> composé de <strong>11 applications métier</strong> a été développé,<br>
+      testé et validé conformément aux standards de qualité logicielle en vigueur.
+    </div>
+
+    <!-- TABLEAU DES APPLICATIONS -->
+    <div class="apps-table-wrapper">
+      <table class="apps-table">
+        <thead>
+          <tr>
+            <th style="width:28px">#</th>
+            <th>Application</th>
+            <th>Mission</th>
+            <th style="text-align:center">Routes</th>
+            <th style="text-align:center">Tables</th>
+            <th style="text-align:center">Fonct.</th>
+            <th style="text-align:center">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="app-num">1</span></td>
+            <td><div class="app-name">ElectroWatch</div><div class="app-desc">Observatoire Electoral</div></td>
+            <td><div class="app-desc">Surveillance temps de parole, salle de crise, IA</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">14</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">10</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">8</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">2</span></td>
+            <td><div class="app-name">MediaWatch</div><div class="app-desc">Surveillance Contenus</div></td>
+            <td><div class="app-desc">Monitoring 24h/24, preuves légales, transcription</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">17</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">7</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">7</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">3</span></td>
+            <td><div class="app-name">MediaBase</div><div class="app-desc">Annuaire National</div></td>
+            <td><div class="app-desc">Registre 847 médias, journalistes, API publique</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">25</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">9</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">7</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">4</span></td>
+            <td><div class="app-name">EduMedia</div><div class="app-desc">Éducation aux Médias</div></td>
+            <td><div class="app-desc">Formations, quiz, certifications, ressources</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">8</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">6</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">5</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">5</span></td>
+            <td><div class="app-name">AntiDeep</div><div class="app-desc">Détection Deepfakes</div></td>
+            <td><div class="app-desc">IA deepfakes, campagnes désinformation</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">8</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">5</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">5</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">6</span></td>
+            <td><div class="app-name">Citoyen</div><div class="app-desc">Portail Citoyen</div></td>
+            <td><div class="app-desc">Signalements, pétitions, décisions publiques</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">7</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">—</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">4</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">7</span></td>
+            <td><div class="app-name">AdWatch</div><div class="app-desc">Régulation Publicitaire</div></td>
+            <td><div class="app-desc">Surveillance publicités, signalements illicites</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">7</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">—</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">3</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">8</span></td>
+            <td><div class="app-name">KidsProtect</div><div class="app-desc">Protection Jeunesse</div></td>
+            <td><div class="app-desc">Contenus mineurs, IA intégrée (Claude)</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">7</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">—</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">4</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">9</span></td>
+            <td><div class="app-name">Copyright</div><div class="app-desc">Droits d'Auteur</div></td>
+            <td><div class="app-desc">Violations droits, registre œuvres protégées</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">7</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">—</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">3</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">10</span></td>
+            <td><div class="app-name">CnraAnalytics</div><div class="app-desc">Tableau de Bord Global</div></td>
+            <td><div class="app-desc">Analytics direction, IA Claude, KPI globaux</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">7</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">—</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">4</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+          <tr>
+            <td><span class="app-num">11</span></td>
+            <td><div class="app-name">StreamRegul</div><div class="app-desc">Régulation Streaming</div></td>
+            <td><div class="app-desc">Streaming, VOD, Web-TV, conformité contenu</div></td>
+            <td style="text-align:center"><span class="badge-sm badge-routes">7</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-tables">—</span></td>
+            <td style="text-align:center"><span class="badge-sm badge-fonct">4</span></td>
+            <td style="text-align:center"><span class="status-ok">✅</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CRITÈRES DE CERTIFICATION -->
+    <div class="criteria-section">
+      <div class="criteria-title">Critères de Certification Validés</div>
+      <div class="criteria-grid">
+        <div class="criterion"><span class="check">✅</span> Architecture modulaire Next.js 16 / React 19</div>
+        <div class="criterion"><span class="check">✅</span> Base de données sécurisée Supabase (RLS activé)</div>
+        <div class="criterion"><span class="check">✅</span> Tests unitaires Vitest (64+ tests, 100% passants)</div>
+        <div class="criterion"><span class="check">✅</span> Design responsive mobile-first</div>
+        <div class="criterion"><span class="check">✅</span> Accessibilité WCAG 2.1</div>
+        <div class="criterion"><span class="check">✅</span> Déploiement continu Vercel (CI/CD)</div>
+        <div class="criterion"><span class="check">✅</span> Intégration IA (Claude API — Anthropic)</div>
+        <div class="criterion"><span class="check">✅</span> Export PDF / Excel / CSV</div>
+        <div class="criterion"><span class="check">✅</span> Authentification sécurisée (JWT + RLS)</div>
+        <div class="criterion"><span class="check">✅</span> Documentation technique complète</div>
+      </div>
+    </div>
+
+    <!-- SIGNATURES ET SCEAUX -->
+    <div class="signatures-row">
+
+      <!-- SIGNATURE DIRECTEUR -->
+      <div class="sig-block">
+        <!-- Zone de signature manuscrite simulée -->
+        <svg viewBox="0 0 120 40" width="120" height="40" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto">
+          <path d="M10,30 Q20,10 35,25 Q50,38 65,20 Q80,5 95,22 Q105,32 110,28" stroke="#1A3A6B" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M15,35 Q30,32 45,34 Q60,36 75,33" stroke="#1A3A6B" stroke-width="1" fill="none" opacity="0.4"/>
+        </svg>
+        <div class="sig-line"></div>
+        <div class="sig-title">Directeur Général</div>
+        <div class="sig-name">Conseil National de Régulation<br>de l'Audiovisuel — CNRA</div>
+      </div>
+
+      <!-- SCEAU OFFICIEL SVG -->
+      <div class="seal-block">
+        <svg viewBox="0 0 120 120" width="110" height="110" xmlns="http://www.w3.org/2000/svg">
+          <!-- Cercle extérieur dentelé -->
+          <circle cx="60" cy="60" r="56" fill="none" stroke="#C9A84C" stroke-width="3" stroke-dasharray="4 2"/>
+          <!-- Cercle principal -->
+          <circle cx="60" cy="60" r="50" fill="#1A3A6B" opacity="0.08"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#C9A84C" stroke-width="2.5"/>
+          <circle cx="60" cy="60" r="44" fill="none" stroke="#C9A84C" stroke-width="0.8"/>
+          <!-- Texte circulaire supérieur -->
+          <path id="topArc" d="M 15,60 A 45,45 0 0,1 105,60" fill="none"/>
+          <text font-size="7" fill="#1A3A6B" font-family="Georgia" font-weight="700" letter-spacing="2">
+            <textPath href="#topArc" startOffset="5%">CONSEIL NATIONAL · RÉGULATION AUDIOVISUELLE</textPath>
+          </text>
+          <!-- Texte circulaire inférieur -->
+          <path id="bottomArc" d="M 18,65 A 42,42 0 0,0 102,65" fill="none"/>
+          <text font-size="6.5" fill="#C9A84C" font-family="Georgia" letter-spacing="2">
+            <textPath href="#bottomArc" startOffset="10%">RÉPUBLIQUE DU SÉNÉGAL · 2025</textPath>
+          </text>
+          <!-- Logo central -->
+          <circle cx="60" cy="58" r="22" fill="#1A3A6B"/>
+          <text x="60" y="54" text-anchor="middle" font-size="13" fill="white" font-family="Arial Black" font-weight="900">CNRA</text>
+          <rect x="42" y="57" width="36" height="1.5" fill="#C9A84C"/>
+          <text x="60" y="66" text-anchor="middle" font-size="6" fill="#C9A84C" font-family="Georgia">CERTIFIÉ</text>
+          <!-- Étoile sénégalaise -->
+          <polygon points="60,72 61.5,76.5 66.5,76.5 62.5,79 64,83.5 60,81 56,83.5 57.5,79 53.5,76.5 58.5,76.5" fill="#C9A84C" transform="scale(0.7) translate(26,26)"/>
+        </svg>
+      </div>
+
+      <!-- QR CODE SVG -->
+      <div class="sig-block">
+        <!-- QR Code SVG représentatif -->
+        <svg viewBox="0 0 80 80" width="80" height="80" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 4px;border:2px solid #1A3A6B;border-radius:4px;padding:4px;background:white">
+          <!-- Coin haut-gauche -->
+          <rect x="4" y="4" width="20" height="20" fill="none" stroke="#1A3A6B" stroke-width="2"/>
+          <rect x="8" y="8" width="12" height="12" fill="#1A3A6B"/>
+          <!-- Coin haut-droit -->
+          <rect x="56" y="4" width="20" height="20" fill="none" stroke="#1A3A6B" stroke-width="2"/>
+          <rect x="60" y="8" width="12" height="12" fill="#1A3A6B"/>
+          <!-- Coin bas-gauche -->
+          <rect x="4" y="56" width="20" height="20" fill="none" stroke="#1A3A6B" stroke-width="2"/>
+          <rect x="8" y="60" width="12" height="12" fill="#1A3A6B"/>
+          <!-- Données QR simulées -->
+          <rect x="28" y="4" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="36" y="4" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="44" y="4" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="28" y="10" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="40" y="10" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="28" y="16" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="36" y="16" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="4" y="28" width="4" height="8" fill="#1A3A6B"/>
+          <rect x="12" y="28" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="24" y="28" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="32" y="28" width="12" height="4" fill="#1A3A6B"/>
+          <rect x="48" y="28" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="60" y="28" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="68" y="28" width="8" height="8" fill="#1A3A6B"/>
+          <rect x="4" y="36" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="16" y="36" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="24" y="36" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="36" y="36" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="44" y="36" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="56" y="36" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="64" y="36" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="4" y="44" width="4" height="8" fill="#1A3A6B"/>
+          <rect x="12" y="44" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="20" y="44" width="8" height="8" fill="#1A3A6B"/>
+          <rect x="32" y="44" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="40" y="44" width="4" height="8" fill="#1A3A6B"/>
+          <rect x="48" y="44" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="60" y="44" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="68" y="44" width="4" height="8" fill="#1A3A6B"/>
+          <rect x="28" y="56" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="40" y="56" width="4" height="8" fill="#1A3A6B"/>
+          <rect x="48" y="56" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="56" y="56" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="68" y="56" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="28" y="64" width="4" height="8" fill="#1A3A6B"/>
+          <rect x="36" y="64" width="8" height="4" fill="#1A3A6B"/>
+          <rect x="48" y="64" width="8" height="8" fill="#1A3A6B"/>
+          <rect x="60" y="64" width="4" height="4" fill="#1A3A6B"/>
+          <rect x="68" y="68" width="8" height="4" fill="#1A3A6B"/>
+        </svg>
+        <div style="font-size:8px;color:#6B7280;text-align:center;font-family:'Segoe UI',sans-serif;margin-bottom:4px;">Vérification en ligne</div>
+        <div class="sig-line"></div>
+        <div class="sig-title">Directeur Technique</div>
+        <div class="sig-name">Direction des Systèmes<br>d'Information — CNRA</div>
+      </div>
+
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- FOOTER OFFICIEL -->
+  <div class="cert-footer">
+    <div class="footer-text">
+      <strong>CNRA</strong> — Conseil National de Régulation de l'Audiovisuel<br>
+      Dakar, République du Sénégal
+    </div>
+    <div class="footer-text" style="text-align:center;">
+      Document officiel · <strong>CNRA-CERT-2025-001</strong><br>
+      Toute reproduction non autorisée est interdite
+    </div>
+    <div class="footer-text" style="text-align:right;">
+      Émis le <strong>20 Juin 2025</strong><br>
+      Validité : 12 mois
+    </div>
+  </div>
+
+</div><!-- /certificate -->
+
+</body>
+</html>
